@@ -2,3 +2,11 @@ name: FirstPlugin
 version: '1.0'
 main: example.firstplugin.FirstPlugin
 api-version: '1.20'
+commands:
+  rtp:
+    description: Teleportiert dich zufällig
+    usage: /rtp
+
+  stp:
+    description: Teleportiert dich gewünscht auf den boden
+    usage: /stp
