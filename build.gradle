@@ -1,6 +1,4 @@
-plugins {
-    id 'java'
-}
+apply plugin: 'java'
 
 group = 'Example'
 version = '1.0-SNAPSHOT'
@@ -44,4 +42,14 @@ processResources {
     filesMatching('plugin.yml') {
         expand props
     }
+}
+
+task copyJar(type: Copy) {
+    from 'build/libs' // Verzeichnis, in dem die JAR-Datei erstellt wird
+    into "/Users/Theo/Desktop" // Zielverzeichnis auf dem Desktop
+    include 'FirstPlugin.jar' // Dateiname deiner JAR-Datei
+}
+
+build {
+    dependsOn copyJar
 }
