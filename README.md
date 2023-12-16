@@ -19,6 +19,7 @@ Kopiere die generierte JAR-Datei vom build/libs Verzeichnis in den Plugins-Ordne
 
 - `/rtp`: Teleportiert dich zufällig an eine Position.
 - `/stp <x> <z>`: Teleportiert dich an die gewünschte Position auf den Boden.
+- 2 faches sneaken : lösst einen Doppelsprung aus 
 
 ## Autoren
 
