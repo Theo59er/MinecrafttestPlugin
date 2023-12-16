@@ -1,0 +1,4 @@
+name: FirstPlugin
+version: '${version}'
+main: example.firstplugin.FirstPlugin
+api-version: '1.20'
