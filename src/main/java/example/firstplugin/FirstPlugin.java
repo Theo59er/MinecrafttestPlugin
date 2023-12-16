@@ -6,13 +6,18 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Turtle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -28,12 +33,13 @@ public final class FirstPlugin extends JavaPlugin implements CommandExecutor, @N
     private final Map<Player, Boolean> doubleJumpAvailable = new HashMap<>();
     private static final long COOLDOWN_TIME = 500; // Zeit in Millisekunden
 
-
+    private boolean runTurtleCommandActivated = false;
     @Override
     public void onEnable() {
         getLogger().info("Plugin enabled!");
         getCommand("rtp").setExecutor(new RTPCommand());
         getCommand("stp").setExecutor(new STPCommand());
+        getCommand("runturtle").setExecutor(new RunTurtleCommand());
         getServer().getPluginManager().registerEvents(this, this);
     }
 
@@ -118,6 +124,7 @@ public final class FirstPlugin extends JavaPlugin implements CommandExecutor, @N
         doubleJumpCooldown.put(player, System.currentTimeMillis());
     }
 
+
     private class STPCommand implements CommandExecutor {
         @Override
         public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -148,5 +155,32 @@ public final class FirstPlugin extends JavaPlugin implements CommandExecutor, @N
     }
 
 
+    private class RunTurtleCommand implements CommandExecutor {
+        @Override
+        public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+            if (cmd.getName().equalsIgnoreCase("runturtle")) {
+                runTurtleCommandActivated = !runTurtleCommandActivated;
+                Player player = (Player) sender;
+                player.sendMessage("Turtle speed effect " + (runTurtleCommandActivated ? "activated" : "deactivated"));
+                return true;
+            }
+            return false;
+        }
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        // Überprüfe, ob der Befehl aktiviert ist
+        if (runTurtleCommandActivated) {
+            // Überprüfe, ob sich der Spieler in der Nähe einer Schildkröte befindet
+            for (Entity entity : event.getPlayer().getNearbyEntities(5, 5, 5)) {
+                if (entity instanceof Turtle) {
+                    // Verleihe der Schildkröte den Geschwindigkeitseffekt
+                    Turtle turtle = (Turtle) entity;
+                    turtle.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 1000));
+                }
+            }
+        }
+    }
 
 }

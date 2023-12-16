@@ -11,3 +11,7 @@ commands:
     description: Teleportiert dich gewünscht auf den boden
     usage: /stp
 
+  runturtle:
+    description: LEt turles run faster if you are scary
+    usage: /runturtle
+
