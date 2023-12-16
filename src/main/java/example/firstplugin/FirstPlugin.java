@@ -12,10 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Turtle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerToggleFlightEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
-import org.bukkit.event.player.PlayerToggleSprintEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -47,6 +44,18 @@ public final class FirstPlugin extends JavaPlugin implements CommandExecutor, @N
         getServer().getPluginManager().registerEvents(this, this);
     }
 
+    @EventHandler
+    public void onPlayerChat(AsyncPlayerChatEvent event) {
+        String message = event.getMessage();
+        if (message.equalsIgnoreCase("pspsps")) {
+            final Player player = event.getPlayer();
+
+            // Verschiebe die asynchrone Operation in den nächsten Tick
+            Bukkit.getScheduler().runTaskLater(this, () -> catcall(player), 1L);
+
+            event.setCancelled(true); // Verhindere, dass die Nachricht im Chat angezeigt wird
+        }
+    }
 
     @Override
     public void onDisable() {
@@ -54,6 +63,7 @@ public final class FirstPlugin extends JavaPlugin implements CommandExecutor, @N
     }
 
     private void catcall(Player player) {
+        player.sendMessage("Kartzen lieben dich <3");
         // Iteriere durch alle Entitäten im Umkreis von 10 Blöcken um den Spieler
         for (Entity entity : player.getNearbyEntities(10, 10, 10)) {
             // Überprüfe, ob die Entität eine Katze ist
