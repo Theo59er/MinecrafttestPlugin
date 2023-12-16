@@ -20,11 +20,6 @@ Kopiere die generierte JAR-Datei vom build/libs Verzeichnis in den Plugins-Ordne
 - `/rtp`: Teleportiert dich zufällig an eine Position.
 - `/stp <x> <z>`: Teleportiert dich an die gewünschte Position auf den Boden.
 
-## Beitrag
-
-- Wenn du einen Fehler gefunden hast, erstelle bitte ein [Issue](https://github.com/Theo59er/FirstPlugin/issues).
-- Wenn du zur Entwicklung beitragen möchtest, erstelle bitte einen [Pull Request](https://github.com/Theo59er/FirstPlugin/pulls).
-
 ## Autoren
 
 - Dein Name @Theo59er
