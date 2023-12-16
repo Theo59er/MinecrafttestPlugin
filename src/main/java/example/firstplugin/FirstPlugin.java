@@ -1,24 +1,40 @@
 package example.firstplugin;
 
+import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
-public final class FirstPlugin extends JavaPlugin implements CommandExecutor {
+public final class FirstPlugin extends JavaPlugin implements CommandExecutor, @NotNull Listener {
 
     private final Random random = new Random();
+    private final Map<Player, Long> doubleJumpCooldown = new HashMap<>();
+
+    private final Map<Player, Boolean> doubleJumpAvailable = new HashMap<>();
+    private static final long COOLDOWN_TIME = 500; // Zeit in Millisekunden
+
 
     @Override
     public void onEnable() {
         getLogger().info("Plugin enabled!");
         getCommand("rtp").setExecutor(new RTPCommand());
         getCommand("stp").setExecutor(new STPCommand());
+        getServer().getPluginManager().registerEvents(this, this);
     }
 
     @Override
@@ -61,6 +77,47 @@ public final class FirstPlugin extends JavaPlugin implements CommandExecutor {
         }
     }
 
+
+    @EventHandler
+    public void onToggleSneak(PlayerToggleSneakEvent event) {
+        Player player = event.getPlayer();
+
+        if (event.isSneaking()) {
+            if (!isOnCooldown(player)) {
+                // Überprüfe, ob der Spieler im letzten Sprung war und noch einen Doppelsprung hat
+                if (doubleJumpAvailable.containsKey(player) && doubleJumpAvailable.get(player)) {
+                    // Spieler hat Doppelsprung verbraucht
+                    doubleJumpAvailable.put(player, false);
+
+                    // Führe den Doppelsprung durch (erhöhe die vertikale Geschwindigkeit)
+                    player.setVelocity(player.getVelocity().add(player.getLocation().getDirection().multiply(0.5).setY(1)));
+
+                    // Setze den Cooldown für den Doppelsprung
+                    setCooldown(player);
+                } else {
+                    // Aktiviere Doppelsprung für den nächsten Sprung
+                    doubleJumpAvailable.put(player, true);
+                }
+            } else {
+                // Spieler ist noch im Cooldown, hier kannst du eine Nachricht ausgeben oder andere Maßnahmen ergreifen
+                player.sendMessage("Du musst warten, bevor du wieder springen kannst.");
+            }
+        }
+    }
+
+    private boolean isOnCooldown(Player player) {
+        if (doubleJumpCooldown.containsKey(player)) {
+            long lastTime = doubleJumpCooldown.get(player);
+            long currentTime = System.currentTimeMillis();
+            return currentTime - lastTime < 2000; // Cooldown von 2000 Millisekunden (2 Sekunden)
+        }
+        return false;
+    }
+
+    private void setCooldown(Player player) {
+        doubleJumpCooldown.put(player, System.currentTimeMillis());
+    }
+
     private class STPCommand implements CommandExecutor {
         @Override
         public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -89,4 +146,7 @@ public final class FirstPlugin extends JavaPlugin implements CommandExecutor {
             return false;
         }
     }
+
+
+
 }
