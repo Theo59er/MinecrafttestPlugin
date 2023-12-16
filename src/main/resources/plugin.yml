@@ -10,3 +10,4 @@ commands:
   stp:
     description: Teleportiert dich gewünscht auf den boden
     usage: /stp
+
