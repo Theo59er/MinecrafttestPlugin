@@ -6,10 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Cat;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Turtle;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
@@ -54,16 +51,43 @@ public final class FirstPlugin extends JavaPlugin implements CommandExecutor, @N
             Bukkit.getScheduler().runTaskLater(this, () -> catcall(player), 1L);
 
             event.setCancelled(true); // Verhindere, dass die Nachricht im Chat angezeigt wird
+        } else if (message.equalsIgnoreCase("pups")) {
+            final Player player  = event.getPlayer();
+            // Verschiebe die asynchrone Operation in den nächsten Tick
+            Bukkit.getScheduler().runTaskLater(this, () -> scareMobs(player), 1L);
+            event.setCancelled(true); // Verhindere, dass die Nachricht im Chat angezeigt wird
         }
     }
+
 
     @Override
     public void onDisable() {
         getLogger().info("Plugin disabled!");
     }
 
-    private void catcall(Player player) {
-        player.sendMessage("Kartzen lieben dich <3");
+    private void scareMobs(Player player) {
+        player.sendMessage("Du hast gepupst jetzt sind alle verwirrt und wissen nicht was sie machen sollen...");
+        // Iteriere durch alle feindlichen Mobs im Umkreis von 10 Blöcken um den Spieler
+        for (Entity entity : player.getNearbyEntities(10, 10, 10)) {
+            if (entity instanceof Mob) {
+                // Lass den feindlichen Mob von dem Spieler wegrennen
+                ((Mob) entity).setTarget(null);
+
+                // Planen, dass der feindliche Mob nach 10 Sekunden wieder normal verhält
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (entity.isValid() && entity instanceof Mob) {
+                            ((Mob) entity).setTarget(player);
+                        }
+                    }
+                }.runTaskLater(this, 500L); // 200 Ticks entsprechen 10 Sekunden
+            }
+        }
+    }
+
+        private void catcall(Player player) {
+        player.sendMessage("Katzen lieben dich <3");
         // Iteriere durch alle Entitäten im Umkreis von 10 Blöcken um den Spieler
         for (Entity entity : player.getNearbyEntities(10, 10, 10)) {
             // Überprüfe, ob die Entität eine Katze ist
