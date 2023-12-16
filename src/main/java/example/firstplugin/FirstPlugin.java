@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Cat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Turtle;
@@ -18,6 +19,7 @@ import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -34,19 +36,45 @@ public final class FirstPlugin extends JavaPlugin implements CommandExecutor, @N
     private static final long COOLDOWN_TIME = 500; // Zeit in Millisekunden
 
     private boolean runTurtleCommandActivated = false;
+
     @Override
     public void onEnable() {
         getLogger().info("Plugin enabled!");
         getCommand("rtp").setExecutor(new RTPCommand());
         getCommand("stp").setExecutor(new STPCommand());
         getCommand("runturtle").setExecutor(new RunTurtleCommand());
+        getCommand("pspsps").setExecutor(new PspspsCommand());
         getServer().getPluginManager().registerEvents(this, this);
     }
+
 
     @Override
     public void onDisable() {
         getLogger().info("Plugin disabled!");
     }
+
+    private void catcall(Player player) {
+        // Iteriere durch alle Entitäten im Umkreis von 10 Blöcken um den Spieler
+        for (Entity entity : player.getNearbyEntities(10, 10, 10)) {
+            // Überprüfe, ob die Entität eine Katze ist
+            if (entity instanceof Cat) {
+                Cat cat = (Cat) entity;
+                // Lass die Katze zum Spieler laufen
+                cat.setTarget(player);
+
+                // Planen, dass die Katze nach 10 Sekunden aufhört, dem Spieler zu folgen
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (cat.isValid()) {
+                            cat.setTarget(null);
+                        }
+                    }
+                }.runTaskLater(this, 200L); // 200 Ticks entsprechen 10 Sekunden
+            }
+        }
+    }
+
     private void teleportPlayerRandomly(Player player) {
         int x = random.nextInt(200001) - 100000; // Bereich: -100000 bis 100000
         int z = random.nextInt(200001) - 100000; // Bereich: -100000 bis 100000
@@ -66,6 +94,22 @@ public final class FirstPlugin extends JavaPlugin implements CommandExecutor, @N
         player.teleport(randomLocation);
     }
 
+    private class PspspsCommand implements CommandExecutor {
+
+        @Override
+        public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+            if (cmd.getName().equalsIgnoreCase("pspsps")) {
+                if (sender instanceof Player) {
+                    Player player = (Player) sender;
+                    catcall(player);
+
+                }
+            }else{
+                sender.sendMessage("Dieser Befehl kann nur von einem Spieler verwendet werden.");
+            }
+            return true;
+        }
+    }
 
     private class RTPCommand implements CommandExecutor {
         @Override
