@@ -1,6 +1,6 @@
 name: FirstPlugin
 version: '1.0'
-main: example.firstplugin.FirstPlugin
+main: example.firstplugin.FirstPlugin  # Vollständiger Pfad zur Hauptklasse
 api-version: '1.20'
 commands:
   rtp:
@@ -8,6 +8,13 @@ commands:
     usage: /rtp
 
   stp:
-    description: Teleportiert dich gewünscht auf den boden
+    description: Teleportiert dich gewünscht auf den Boden
     usage: /stp
 
+  runturtle:
+    description: Lässt Schildkröten schneller laufen, wenn du Angst hast
+    usage: /runturtle
+
+  pspsps:
+    description: Katzen lieben dich
+    usage: /pspsps
