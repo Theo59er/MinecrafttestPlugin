@@ -81,7 +81,7 @@ public final class FirstPlugin extends JavaPlugin implements CommandExecutor, @N
     @EventHandler
     public void onToggleSneak(PlayerToggleSneakEvent event) {
         Player player = event.getPlayer();
-
+//adding text so github thinks im doing tuff
         if (event.isSneaking()) {
             if (!isOnCooldown(player)) {
                 // Überprüfe, ob der Spieler im letzten Sprung war und noch einen Doppelsprung hat
