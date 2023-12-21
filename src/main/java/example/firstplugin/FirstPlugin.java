@@ -87,7 +87,7 @@ public final class FirstPlugin extends JavaPlugin implements CommandExecutor, @N
     }
 
         private void catcall(Player player) {
-        player.sendMessage("Katzen lieben dich <3");
+        player.sendMessage("Ein Spuch denn nur wahre liebhaber kennen");
         // Iteriere durch alle Entitäten im Umkreis von 10 Blöcken um den Spieler
         for (Entity entity : player.getNearbyEntities(10, 10, 10)) {
             // Überprüfe, ob die Entität eine Katze ist
