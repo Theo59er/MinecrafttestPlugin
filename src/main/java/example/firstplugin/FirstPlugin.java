@@ -73,16 +73,7 @@ public final class FirstPlugin extends JavaPlugin implements CommandExecutor, @N
                 // Lass den feindlichen Mob von dem Spieler wegrennen
                 ((Mob) entity).setTarget(null);
 
-                // Planen, dass der feindliche Mob nach 10 Sekunden wieder normal verhält
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        if (entity.isValid() && entity instanceof Mob) {
-                            ((Mob) entity).setTarget(player);
-                        }
-                    }
-                }.runTaskLater(this, 500L); // 200 Ticks entsprechen 10 Sekunden
-            }
+                }
         }
     }
 
@@ -97,7 +88,7 @@ public final class FirstPlugin extends JavaPlugin implements CommandExecutor, @N
                 cat.setTarget(player);
 
                 // Planen, dass die Katze nach 10 Sekunden aufhört, dem Spieler zu folgen
-                new BukkitRunnable() {
+                new     BukkitRunnable() {
                     @Override
                     public void run() {
                         if (cat.isValid()) {
